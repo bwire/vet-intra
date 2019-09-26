@@ -1,10 +1,27 @@
+'use strict'
+
 const express = require('express');
 const app = express();
-//const mongoose = require('mongoose');
+const passport = require('passport');
+      
+const User = require('./models/user');
 
-//mongoose.connect('mongodb://localhost/vet-inta-tmp');
+// config
+require('dotenv').config();
 
+// app
 app.set('view engine', 'ejs');
+app.use(require('express-session')({ 
+  secret: process.env.PASSPORT_SECRET,
+  resave: false, 
+  saveUninitialized: false,
+}));
+
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser(User.serialize);
+passport.deserializeUser(User.deserialize);
 
 app.get('/', (req, res) => {
   res.render('home');
@@ -15,6 +32,6 @@ app.get('/secret', (req, res) => {
 });
 
 // TODO: use process.env values
-app.listen(3000, 'localhost', () => {
+app.listen(process.env.APP_PORT, process.env.APP_HOST, () => {
   console.log('Server started...');
 })
