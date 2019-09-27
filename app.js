@@ -1,12 +1,12 @@
-'use strict'
-
 const express = require('express');
+// eslint-disable-next-line linebreak-style
+
 const app = express();
 
-const passport = require('passport'),
-      LocalStrategy = require('passport-local'),
-      bodyParser = require('body-parser');
-      
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const bodyParser = require('body-parser');
+
 const User = require('./models/user');
 
 // config
@@ -14,11 +14,12 @@ require('dotenv').config();
 
 // app
 app.set('view engine', 'ejs');
-app.use(require('express-session')({ 
+app.use(require('express-session')({
   secret: process.env.PASSPORT_SECRET,
-  resave: false, 
+  resave: false,
   saveUninitialized: false,
 }));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // passport
@@ -50,13 +51,12 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
-app.post('/login', 
+app.post('/login',
   passport.authenticate('local', {
     successRedirect: '/secret',
-    failureRedirect: '/login'
-  })
-);
+    failureRedirect: '/login',
+  }));
 
 app.listen(process.env.APP_PORT, process.env.APP_HOST, () => {
   console.log('Server started...');
-})
+});
