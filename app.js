@@ -1,5 +1,4 @@
 const express = require('express');
-// eslint-disable-next-line linebreak-style
 
 const app = express();
 
