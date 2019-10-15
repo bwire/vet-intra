@@ -37,10 +37,7 @@ passport.use(new LocalStrategy(User.authenticate));
 passport.serializeUser(User.serialize);
 passport.deserializeUser(User.deserialize);
 
-app.use((req, res, next) => {
-  req.db = knex;
-  next();
-});
+app.use((req) => { req.db = knex; });
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
