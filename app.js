@@ -5,6 +5,15 @@ const app = express();
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const bodyParser = require('body-parser');
+const knex = require('knex')({
+  client: 'mysql',
+  connection: {
+    host: process.env.APP_HOST,
+    user: process.env.USER_ADMIN,
+    password: process.env.USER_ADMIN_PASS,
+    database: process.env.DB_NAME,
+  },
+});
 
 const User = require('./models/user');
 
@@ -27,6 +36,11 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate));
 passport.serializeUser(User.serialize);
 passport.deserializeUser(User.deserialize);
+
+app.use((req, res, next) => {
+  req.db = knex;
+  next();
+});
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
