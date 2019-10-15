@@ -9,5 +9,12 @@ module.exports = {
       password: process.env.USER_ADMIN_PASS,
       database: process.env.DB_NAME,
     },
+    migrations: {
+      tableName: '_knex',
+      directory: 'database/migrations',
+    },
+    seeds: {
+      directory: 'database/seeds/dev',
+    },
   },
 };
