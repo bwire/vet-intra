@@ -1,10 +1,10 @@
 const up = (knex) => knex.schema
   .createTable('users', (table) => {
-    table.increments('id');
+    table.increments('id').primary();
     table.string('firstName', 255).notNullable();
     table.string('secondName', 255).notNullable();
     table.string('lastName', 255).notNullable();
-    table.string('email').notNullable();
+    table.string('email').unique().notNullable();
     table.string('password').notNullable();
     table.boolean('approved');
   });

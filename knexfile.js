@@ -9,11 +9,11 @@ module.exports = {
       password: process.env.USER_ADMIN_PASS,
       database: process.env.DB_NAME,
     },
-  },
-  migrations: {
-    directory: 'database/migrations',
-  },
-  seeds: {
-    directory: 'database/seeds/dev',
+    migrations: {
+      directory: './database/migrations',
+    },
+    seeds: {
+      directory: 'database/seeds/dev',
+    },
   },
 };
