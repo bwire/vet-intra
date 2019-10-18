@@ -1,10 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const knex = require('./connections/knex');
 const middleware = require('./middleware');
 const routes = require('./routes');
 const errorHandler = require('./middleware/error-handler');
-
-require('dotenv').config();
 
 module.exports = () => {
   const app = express();

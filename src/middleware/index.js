@@ -4,6 +4,7 @@ const passport = require('./passport');
 
 const middleware = (app, knex) => {
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
   app.set('view engine', 'ejs');
 
   app.use(sessions({
