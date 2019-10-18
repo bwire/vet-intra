@@ -1,6 +1,6 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
-const { crypto: { hash } } =  require('../helpers');
+const User = require('../models/user');
 
 require('express-async-errors');
 
@@ -11,22 +11,10 @@ router.post('/signup', [
   check('password').isLength({ min: 5 }),
 ], async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
 
-  const user = {
-    firstName: req.body.firstName,
-    secondName: req.body.secondName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: hash(req.body.password),
-    approved: false,
-  };
-
-  const newUser = await req.db('users').insert(user);
-  console.log('New user recorded', newUser);
-  res.json(newUser);
+  return errors.isEmpty()
+    ? await User(req.db).createNewUser(req.body)
+    : res.status(422).json({ errors: errors.array() });
 });
 
 module.exports = router;
