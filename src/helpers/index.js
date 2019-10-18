@@ -1,5 +1,7 @@
 const serverErrors = require('./system/server-errors');
+const crypto = require('./system/crypto');
 
-module.export = {
+module.exports = {
   serverErrors,
+  crypto,
 };
