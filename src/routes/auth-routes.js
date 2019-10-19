@@ -11,10 +11,23 @@ router.post('/signup', [
   check('password').isLength({ min: 5 }),
 ], async (req, res) => {
   const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    const userDb = User(req.db);
+    const existingUser = await userDb.getUserByEmail(req.body.email);
 
-  return errors.isEmpty()
-    ? await User(req.db).createNewUser(req.body)
-    : res.status(422).json({ errors: errors.array() });
+    console.log(existingUser);
+    
+    if (!existingUser) {
+      return await User(req.db).createNewUser(req.body);
+    }
+    errors.array().push({
+      value: req.body.email,
+      msg: 'User with this e-mail already exists',
+      param: 'email',
+      location: 'body',
+    });
+  }
+  res.status(422).json({ errors: errors.array() });
 });
 
 module.exports = router;

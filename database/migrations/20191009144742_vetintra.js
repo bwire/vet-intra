@@ -6,7 +6,8 @@ const up = (knex) => knex.schema
     table.string('lastName', 255).notNullable();
     table.string('email').unique().notNullable();
     table.string('password').notNullable();
-    table.boolean('approved');
+    table.boolean('approved').defaultTo(false);
+    table.boolean('enabled').defaultTo(false);
   });
 
 const down = (knex) => knex.schema.dropTable('users');
