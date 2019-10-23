@@ -1,12 +1,6 @@
 const { check, validationResult } = require('express-validator');
 
 const validate = () => {
-  const checkNameParts = () => {
-    check('firstName').exists();
-    check('secondName').exists();
-    check('lastName').exists();
-  };
-
   const checkEmailValidity = () => check('email')
     .exists()
     .isEmail()
@@ -19,7 +13,6 @@ const validate = () => {
 
   return {
     validateSignUp: (User) => [
-      checkNameParts(),
       checkPasswordValidity(),
       checkEmailValidity().custom(async (value, { req }) => {
         const user = await User(req.db).getUserByEmail(value);
