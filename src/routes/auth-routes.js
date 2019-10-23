@@ -1,19 +1,19 @@
 const express = require('express');
-const { validateSignUp, checkForExistingEmail, result } = require('../middleware/validator');
+const { validateSignUp, validationResult } = require('../middleware/validator');
 const User = require('../models/user');
 
 require('express-async-errors');
 
 const router = express.Router();
 
-router.post('/signup', validateSignUp(), async (req, res) => {
-  const users = User(req.db);
-  await checkForExistingEmail(users).run(req);
-
-  const errors = result(req);
-  return (errors.isEmpty())
-    ? await users.createNewUser(req.body)
+async function completeResponse(res, errors, fn) {
+  return errors.isEmpty()
+    ? await res.json(fn())
     : res.status(422).json({ errors: errors.array() });
+}
+
+router.post('/signup', validateSignUp(User), async (req, res) => {
+  completeResponse(res, validationResult(req), () => User(req.db).createNewUser(req.body));
 });
 
 module.exports = router;

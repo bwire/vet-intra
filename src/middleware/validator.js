@@ -1,26 +1,34 @@
-const { check, body, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
 const validate = () => {
-  const checkEmailValidity = () => check('email').isEmail()
+  const checkNameParts = () => {
+    check('firstName').exists();
+    check('secondName').exists();
+    check('lastName').exists();
+  };
+
+  const checkEmailValidity = () => check('email')
+    .exists()
+    .isEmail()
     .withMessage('The e-mail is incorrect');
 
-  const checkForExistingEmail = (users) => body('email').custom(async (value) => {
-    const user = await users.getUserByEmail(value);
-    if (user) {
-      return Promise.reject(new Error('E-mail already in use'));
-    }
-  });
-
-  const checkPasswordValidity = () => check('password').isLength({ min: 5 })
+  const checkPasswordValidity = () => check('password')
+    .exists()
+    .isLength({ min: 5 })
     .withMessage('The password is too short! Should be at least 5 symbols!');
 
   return {
-    validateSignUp: () => [
-      checkEmailValidity(),
+    validateSignUp: (User) => [
+      checkNameParts(),
       checkPasswordValidity(),
+      checkEmailValidity().custom(async (value, { req }) => {
+        const user = await User(req.db).getUserByEmail(value);
+        if (user) {
+          return Promise.reject(new Error('E-mail already in use'));
+        }
+      }),
     ],
-    checkForExistingEmail,
-    result: (req) => validationResult(req),
+    validationResult: (req) => validationResult(req),
   };
 };
 
