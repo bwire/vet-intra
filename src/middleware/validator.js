@@ -11,8 +11,19 @@ const validate = () => {
     .isLength({ min: 5 })
     .withMessage('The password is too short! Should be at least 5 symbols!');
 
+  const withValidationResult = (checks) => {
+    checks.push((req, res, next) => {
+      const errors = validationResult(req);
+      return errors.isEmpty() ? next() : res.status(422).json({ errors: errors.array() });
+    });
+    return checks;
+  };
+
   return {
-    validateSignUp: (User) => [
+    validateSignUp: (User) => withValidationResult([
+      check('firstName').exists(),
+      check('secondName').exists(),
+      check('lastName').exists(),
       checkPasswordValidity(),
       checkEmailValidity().custom(async (value, { req }) => {
         const user = await User(req.db).getUserByEmail(value);
@@ -20,8 +31,7 @@ const validate = () => {
           return Promise.reject(new Error('E-mail already in use'));
         }
       }),
-    ],
-    validationResult: (req) => validationResult(req),
+    ]),
   };
 };
 
