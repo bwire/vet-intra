@@ -1,5 +1,7 @@
 const up = (knex) => knex.schema
   .createTable('users', (table) => {
+    table.collate('utf8_unicode_ci');
+    table.charset('utf8');
     table.increments('id').primary();
     table.string('firstName', 255).notNullable();
     table.string('secondName', 255).notNullable();
