@@ -10,8 +10,8 @@ router.post('/signup', validateSignUp(User),
   async (req, res) => res.json(await User(req.db).createNewUser(req.body)));
 
 router.post('/signin', validateSignIn(),
-  async (req, res, next) => passport.authenticate('local',
-    (error, user, info) => {
+  (req, res, next) => passport.authenticate('local',
+    async (error, user, info) => {
       if (error) {
         return serverErrors.unauthorized('failed to login');
       }
