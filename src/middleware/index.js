@@ -3,14 +3,14 @@ const sessions = require('express-session');
 const passport = require('./passport');
 
 const middleware = (app, knex) => {
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
   app.set('view engine', 'ejs');
 
   app.use(sessions({
     secret: process.env.PASSPORT_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   }));
 
   passport(app, knex);
