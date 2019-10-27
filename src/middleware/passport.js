@@ -1,12 +1,13 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+
 const User = require('../models/user');
 const { crypto: { hash } } =  require('../helpers');
 
 const authenticate = (db) => async (email, password, done) => {
   const user = await User(db).getUserByEmail(email);
   if (!user) {
-    return done(null, false, { message: 'Incorrect user name' });
+    return done(null, false, { message: 'Incorrect e-mail' });
   }
   if (hash(password) !== user.password) {
     return done(null, false, { message: 'Incorrect password' });

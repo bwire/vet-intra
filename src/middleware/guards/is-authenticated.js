@@ -1,3 +1,3 @@
-const { serverErrors: { unathorized } } = require('../../helpers');
+const { serverErrors: { unauthorized } } = require('../../helpers');
 
-module.exports = (req, res, next) => req.isAuthenticated() ? next() : unathorized(res);
+module.exports = (req, res, next) => req.isAuthenticated() ? next() : unauthorized(res);
