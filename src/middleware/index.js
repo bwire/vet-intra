@@ -1,10 +1,12 @@
 const bodyParser = require('body-parser');
 const sessions = require('express-session');
+const cors = require('cors');
 const passport = require('./passport');
 
 const middleware = (app, knex) => {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(cors());
   app.set('view engine', 'ejs');
 
   app.use(sessions({

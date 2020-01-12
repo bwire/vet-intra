@@ -1,11 +1,31 @@
 const express = require('express');
-const { validateSignUp } = require('../middleware/validator');
+const passport = require('passport');
+const { serverErrors } = require('../helpers');
+const { validateSignUp, validateSignIn } = require('../middleware/validator');
 const User = require('../models/user');
-
-require('express-async-errors');
 
 const router = express.Router();
 
-router.post('/signup', validateSignUp(User), async (req, res) => res.json(User(req.db).createNewUser(req.body)));
+router.post('/signup', validateSignUp(User),
+  async (req, res) => res.json(await User(req.db).createNewUser(req.body)));
+
+router.post('/signin', validateSignIn(),
+  (req, res, next) => passport.authenticate('local',
+    (error, user, info) => {
+      if (error) {
+        return serverErrors.unauthorized('failed to login');
+      }
+      if (!user) {
+        return serverErrors.unauthorized(res, info);
+      }
+      req.login(user, (err) => err
+        ? serverErrors.unauthorized('failed to login')
+        : res.send('User authenticated!\n'));
+    })(req, res, next));
+
+router.get('/signout', (req, res) => {
+  req.logout();
+  res.send('User logged out');
+});
 
 module.exports = router;

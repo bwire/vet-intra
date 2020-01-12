@@ -1,4 +1,4 @@
-const { crypto: { hash } } =  require('../helpers');
+const { crypto: { hash } } = require('../helpers');
 
 const User = () => (db) => {
   const table = db('users');
@@ -7,11 +7,10 @@ const User = () => (db) => {
       const user = { ...data };
       user.password = hash(data.password);
       const newUser = await table.insert(user);
-
-      console.log('New user recorded', newUser);
       return newUser;
     },
     getUserByEmail: async (email) => await table.where({ email }).first(),
+    getUserById: async (id) => await table.where({ id }).first(),
   };
 };
 

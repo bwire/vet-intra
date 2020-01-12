@@ -25,12 +25,15 @@ const validate = () => {
       check('secondName').exists(),
       check('lastName').exists(),
       checkPassword(),
-      checkEmail().custom(async (value, { req }) => {
+      checkEmail().exists().custom(async (value, { req }) => {
         const user = await User(req.db).getUserByEmail(value);
         if (user) {
           return Promise.reject(new Error('E-mail already in use'));
         }
       }),
+    ]),
+    validateSignIn: () => withValidationResult([
+      checkEmail().exists(),
     ]),
   };
 };
